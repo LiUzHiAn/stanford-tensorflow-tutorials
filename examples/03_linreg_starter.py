@@ -5,7 +5,8 @@ cs20.stanford.edu
 Lecture 03
 """
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import time
 
 import numpy as np
@@ -24,6 +25,8 @@ data, n_samples = utils.read_birth_life_data(DATA_FILE)
 X, Y = None, None
 #############################
 ########## TO DO ############
+X = tf.placeholder(shape=[], name="input_X", dtype=tf.float32)
+Y = tf.placeholder(shape=[], name="label", dtype=tf.float32)
 #############################
 
 # Step 3: create weight and bias, initialized to 0.0
@@ -31,6 +34,8 @@ X, Y = None, None
 w, b = None, None
 #############################
 ########## TO DO ############
+w = tf.get_variable(name="weight", initializer=tf.constant(0.0))
+b = tf.get_variable(name="bias", initializer=tf.constant(0.0))
 #############################
 
 # Step 4: build model to predict Y
@@ -38,12 +43,14 @@ w, b = None, None
 Y_predicted = None
 #############################
 ########## TO DO ############
+Y_predicted = w * X + b
 #############################
 
 # Step 5: use the square error as the loss function
 loss = None
 #############################
 ########## TO DO ############
+loss = tf.square(Y - Y_predicted, name="loss")
 #############################
 
 # Step 6: using gradient descent with learning rate of 0.001 to minimize loss
@@ -54,41 +61,45 @@ start = time.time()
 # Create a filewriter to write the model's graph to TensorBoard
 #############################
 ########## TO DO ############
+writer = tf.summary.FileWriter("./graphs/03_linreg_starter_graph", tf.get_default_graph())
 #############################
 
 with tf.Session() as sess:
-    # Step 7: initialize the necessary variables, in this case, w and b
-    #############################
-    ########## TO DO ############
-    #############################
+	# Step 7: initialize the necessary variables, in this case, w and b
+	#############################
+	########## TO DO ############
+	sess.run(tf.global_variables_initializer())
+	#############################
 
-    # Step 8: train the model for 100 epochs
-    for i in range(100):
-        total_loss = 0
-        for x, y in data:
-            # Execute train_op and get the value of loss.
-            # Don't forget to feed in data for placeholders
-            _, loss = ########## TO DO ############
-            total_loss += loss
+	# Step 8: train the model for 100 epochs
+	for i in range(100):
+		total_loss = 0
+		for x, y in data:
+			# Execute train_op and get the value of loss.
+			# Don't forget to feed in data for placeholders
+			_, l = sess.run([optimizer, loss], feed_dict={X: x, Y: y})
+			total_loss += l
 
-        print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
+		print('Epoch {0}: {1}'.format(i, total_loss / n_samples))
 
-    # close the writer when you're done using it
-    #############################
-    ########## TO DO ############
-    #############################
-    writer.close()
-    
-    # Step 9: output the values of w and b
-    w_out, b_out = None, None
-    #############################
-    ########## TO DO ############
-    #############################
+	# close the writer when you're done using it
+	#############################
+	########## TO DO ############
+	#############################
+	writer.close()
 
-print('Took: %f seconds' %(time.time() - start))
+	# Step 9: output the values of w and b
+	w_out, b_out = None, None
+	#############################
+	########## TO DO ############
+	w_out = sess.run(w)
+	b_out = sess.run(b)
+#############################
+
+print('Took: %f seconds' % (time.time() - start))
 
 # uncomment the following lines to see the plot 
-# plt.plot(data[:,0], data[:,1], 'bo', label='Real data')
-# plt.plot(data[:,0], data[:,0] * w_out + b_out, 'r', label='Predicted data')
-# plt.legend()
-# plt.show()
+plt.plot(data[:, 0], data[:, 1], 'bo', label='Real data')
+plt.plot(data[:, 0], data[:, 0] * w_out + b_out, 'r', label='Predicted data')
+plt.legend()
+plt.show()
