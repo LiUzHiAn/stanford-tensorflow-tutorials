@@ -24,7 +24,6 @@ n_train = 60000
 n_test = 10000
 
 # Step 1: Read in data
-# mnist_folder = "f:\cs20si\\repository\mnist"
 mnist_folder = "data/mnist"
 # I download the data manually and save into respective mnist_folder
 # utils.download_mnist(mnist_folder)
@@ -40,7 +39,8 @@ train_data = train_data.batch(batch_size)
 test_data = None
 #############################
 ########## TO DO ############
-test_data = tf.data.Dataset.from_tensor_slices((test))
+test_data = tf.data.Dataset.from_tensor_slices(test)
+test_data = test_data.batch(batch_size)
 #############################
 
 
@@ -81,7 +81,8 @@ logits = tf.matmul(img, w) + b
 loss = None
 #############################
 ########## TO DO ############
-loss = tf.nn.softmax_cross_entropy_with_logits(labels=label, logits=logits, name="entopy")
+entropy = tf.nn.softmax_cross_entropy_with_logits_v2(labels=label, logits=logits, name="entopy")
+loss=tf.reduce_mean(entropy,name="loss")
 #############################
 
 
