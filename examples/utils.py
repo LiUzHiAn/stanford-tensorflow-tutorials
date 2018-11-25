@@ -97,7 +97,7 @@ def parse_data(path, dataset, flatten):
 		raise NameError('dataset must be train or t10k')
 
 	label_file = os.path.join(path, dataset + '-labels-idx1-ubyte')
-	with open(label_file, 'rb') as file:
+	with open(label_file , 'rb') as file:
 		_, num = struct.unpack(">II", file.read(8))
 		labels = np.fromfile(file, dtype=np.int8)  # int8
 		new_labels = np.zeros((num, 10))
